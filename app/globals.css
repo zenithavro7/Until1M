@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; }
+
+html, body {
+  background: #0a0014;
+  color: #f5f5f7;
+  min-height: 100%;
+}
+
+body {
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(124,58,237,0.35), transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, rgba(34,211,238,0.25), transparent 60%),
+    radial-gradient(800px 600px at 50% 120%, rgba(255,43,214,0.25), transparent 60%),
+    #07000f;
+  background-attachment: fixed;
+}
+
+.grain::before {
+  content: "";
+  position: fixed; inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 3px 3px;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  z-index: 0;
+}
+
+.glass {
+  background: rgba(20, 8, 40, 0.55);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 font-semibold uppercase tracking-wider transition;
+}
+.btn-primary {
+  background: linear-gradient(90deg,#c4ff00,#22d3ee,#ff2bd6,#c4ff00);
+  background-size: 300% 300%;
+  color: #0a0014;
+  box-shadow: 0 10px 30px rgba(196,255,0,0.25);
+  animation: gradient 8s ease infinite;
+}
+.btn-primary:hover { transform: translateY(-1px); }
+.btn-ghost { @apply border border-white/15 text-white/90 hover:bg-white/5; }
+
+.title-stroke {
+  -webkit-text-stroke: 1px rgba(255,255,255,0.2);
+}
+
+.tab-active { background: linear-gradient(90deg, rgba(196,255,0,0.2), rgba(255,43,214,0.2)); border-color: rgba(196,255,0,0.5); }
+
+input, textarea, select {
+  @apply bg-black/30 border border-white/10 rounded-xl px-3 py-2 text-white placeholder-white/40 focus:outline-none focus:border-neon;
+}
