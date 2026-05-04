@@ -14,8 +14,8 @@ export type JournalEntry = {
   title: string;
   didToday: string;
   lessons: string;
-  mood: number; // 1-5
-  energy: number; // 1-5
+  mood: number;
+  energy: number;
   win: string;
   photoIds: string[];
   createdAt: number;
@@ -38,11 +38,38 @@ export type Milestone = {
   hitAt: number | null;
 };
 
+export type NetWorthSnapshot = { date: string; amount: number; at: number };
+
+export type Habit = { id: string; emoji: string; name: string; createdAt: number; color: string };
+export type HabitCheck = { habitId: string; date: string };
+
+export type Letter = {
+  id: string;
+  title: string;
+  body: string;
+  unlockAmount: number; // unlocked when net worth >= this
+  createdAt: number;
+  openedAt: number | null;
+};
+
+export type VisionItem = {
+  id: string;
+  caption: string;
+  photoId: string | null;
+  link: string;
+  createdAt: number;
+};
+
 const KEYS = {
   state: "u1m:state",
   entries: "u1m:entries",
   challenges: "u1m:challenges",
   milestones: "u1m:milestones",
+  snapshots: "u1m:snapshots",
+  habits: "u1m:habits",
+  habitChecks: "u1m:habitChecks",
+  letters: "u1m:letters",
+  vision: "u1m:vision",
 };
 
 function read<T>(k: string, fallback: T): T {
@@ -82,6 +109,27 @@ export const Store = {
     return seed;
   },
   setMilestones(m: Milestone[]) { write(KEYS.milestones, m); },
+
+  getSnapshots(): NetWorthSnapshot[] { return read<NetWorthSnapshot[]>(KEYS.snapshots, []); },
+  setSnapshots(s: NetWorthSnapshot[]) { write(KEYS.snapshots, s); },
+  addSnapshot(amount: number) {
+    const all = Store.getSnapshots();
+    const date = todayISO();
+    const next = [...all.filter((s) => s.date !== date), { date, amount, at: Date.now() }].sort((a, b) => a.at - b.at);
+    write(KEYS.snapshots, next);
+    return next;
+  },
+
+  getHabits(): Habit[] { return read<Habit[]>(KEYS.habits, []); },
+  setHabits(h: Habit[]) { write(KEYS.habits, h); },
+  getHabitChecks(): HabitCheck[] { return read<HabitCheck[]>(KEYS.habitChecks, []); },
+  setHabitChecks(c: HabitCheck[]) { write(KEYS.habitChecks, c); },
+
+  getLetters(): Letter[] { return read<Letter[]>(KEYS.letters, []); },
+  setLetters(l: Letter[]) { write(KEYS.letters, l); },
+
+  getVision(): VisionItem[] { return read<VisionItem[]>(KEYS.vision, []); },
+  setVision(v: VisionItem[]) { write(KEYS.vision, v); },
 };
 
 export const todayISO = () => new Date().toISOString().slice(0, 10);

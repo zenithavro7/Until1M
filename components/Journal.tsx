@@ -6,8 +6,13 @@ import PhotoUpload from "./PhotoUpload";
 export default function Journal({ state }: { state: JourneyState }) {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [editing, setEditing] = useState<JournalEntry | null>(null);
+  const [q, setQ] = useState("");
 
   useEffect(() => { setEntries(Store.getEntries()); }, []);
+
+  const filtered = q.trim()
+    ? entries.filter((e) => (e.title + " " + e.didToday + " " + e.lessons + " " + e.win).toLowerCase().includes(q.toLowerCase()))
+    : entries;
 
   const save = (e: JournalEntry) => {
     const next = [e, ...entries.filter((x) => x.id !== e.id)].sort((a, b) => b.createdAt - a.createdAt);
@@ -27,15 +32,18 @@ export default function Journal({ state }: { state: JourneyState }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
         <h3 className="text-2xl font-black">📓 Journal</h3>
-        <button className="btn btn-primary" onClick={() => setEditing(newEntry())}>+ New Entry</button>
+        <div className="flex gap-2 items-center">
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="🔎 Search entries…" className="w-56" />
+          <button className="btn btn-primary" onClick={() => setEditing(newEntry())}>+ New Entry</button>
+        </div>
       </div>
 
       {editing && <Editor entry={editing} onSave={save} onCancel={() => setEditing(null)} />}
 
       <div className="grid md:grid-cols-2 gap-4">
-        {entries.map((e) => (
+        {filtered.map((e) => (
           <div key={e.id} className="glass rounded-2xl p-5">
             <div className="flex justify-between items-start gap-2">
               <div>

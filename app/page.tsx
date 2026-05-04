@@ -8,9 +8,14 @@ import Notifications from "@/components/Notifications";
 import Quote from "@/components/Quote";
 import StreakBar from "@/components/StreakBar";
 import DataTools from "@/components/DataTools";
+import Habits from "@/components/Habits";
+import Letters from "@/components/Letters";
+import Focus from "@/components/Focus";
+import VisionBoard from "@/components/VisionBoard";
+import WinWall from "@/components/WinWall";
 import { Store, dayNumber, type JourneyState } from "@/lib/storage";
 
-const TABS = ["Dashboard", "Journal", "Challenges", "Milestones", "Settings"] as const;
+const TABS = ["Dashboard", "Journal", "Habits", "Focus", "Challenges", "Milestones", "Vision", "Settings"] as const;
 type Tab = typeof TABS[number];
 
 export default function Home() {
@@ -56,13 +61,36 @@ export default function Home() {
             <Timer state={state} setState={setState} />
             <div className="grid md:grid-cols-2 gap-4">
               <StreakBar />
+              <Focus />
               <Notifications />
+              <WinWall />
             </div>
           </>
         )}
         {tab === "Journal" && <Journal state={state} />}
+        {tab === "Habits" && <Habits />}
+        {tab === "Focus" && (
+          <div className="grid md:grid-cols-2 gap-4">
+            <Focus />
+            <div className="glass rounded-2xl p-5">
+              <h3 className="text-xl font-black">⏱ Why focus blocks?</h3>
+              <p className="text-sm text-white/70 mt-2">$1M is built one deep block at a time. Stack the sessions. The clock outside never stops — make the inside ones count.</p>
+              <ul className="mt-3 text-sm text-white/70 list-disc pl-5 space-y-1">
+                <li>25/5 — quick wins</li>
+                <li>50/10 — real builders</li>
+                <li>90/20 — flow state</li>
+              </ul>
+            </div>
+          </div>
+        )}
         {tab === "Challenges" && <Challenges />}
         {tab === "Milestones" && <Milestones state={state} setState={setState} />}
+        {tab === "Vision" && (
+          <div className="space-y-6">
+            <VisionBoard />
+            <Letters state={state} />
+          </div>
+        )}
         {tab === "Settings" && (
           <div className="space-y-4">
             <div className="glass rounded-2xl p-5">

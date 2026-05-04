@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Store, type JourneyState, type Milestone } from "@/lib/storage";
+import { fireConfetti, playDing } from "@/lib/confetti";
+import NetWorthChart from "./NetWorthChart";
 
 const fmt = (n: number) => "$" + n.toLocaleString();
 
@@ -14,8 +16,11 @@ export default function Milestones({ state, setState }: { state: JourneyState; s
   const updateWorth = (n: number) => {
     const next = { ...state, netWorth: n };
     setState(next); Store.setState(next);
+    Store.addSnapshot(n);
+    const newlyHit = list.some((x) => !x.hitAt && n >= x.amount);
     const m = list.map((x) => (!x.hitAt && n >= x.amount ? { ...x, hitAt: Date.now() } : x));
     setList(m); Store.setMilestones(m);
+    if (newlyHit) { fireConfetti(); playDing(); }
   };
 
   const pct = Math.min(100, (worth / state.goal) * 100);
@@ -23,6 +28,8 @@ export default function Milestones({ state, setState }: { state: JourneyState; s
   return (
     <div className="space-y-4">
       <h3 className="text-2xl font-black">🏁 Milestones</h3>
+
+      <NetWorthChart state={state} />
 
       <div className="glass rounded-2xl p-5">
         <div className="flex justify-between items-end">

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Store, type JourneyState } from "@/lib/storage";
+import { fireConfetti, playDing } from "@/lib/confetti";
 
 function fmt(ms: number) {
   const s = Math.max(0, Math.floor(ms / 1000));
@@ -33,6 +34,8 @@ export default function Timer({ state, setState }: { state: JourneyState; setSta
     if (!confirm("Confirm: you've hit $1,000,000? This will stop the timer permanently.")) return;
     const next = { ...state, millionAt: Date.now(), netWorth: Math.max(state.netWorth, state.goal) };
     Store.setState(next); setState(next);
+    fireConfetti(); playDing();
+    setTimeout(fireConfetti, 600); setTimeout(fireConfetti, 1200);
   };
 
   return (
