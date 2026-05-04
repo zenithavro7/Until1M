@@ -60,6 +60,47 @@ export type VisionItem = {
   createdAt: number;
 };
 
+export type MrrSnapshot = {
+  date: string; // YYYY-MM-DD
+  mrr: number;
+  customers: number;
+  at: number;
+};
+
+export type ShipItem = {
+  id: string;
+  date: string;
+  title: string;
+  notes: string;
+  link: string;
+  project: string;
+  createdAt: number;
+};
+
+export type IdeaStatus = "active" | "shipped" | "killed";
+export type Idea = {
+  id: string;
+  title: string;
+  pitch: string;
+  market: number;   // 1-5
+  edge: number;     // 1-5
+  pain: number;     // 1-5
+  leverage: number; // 1-5 (AI-leverage)
+  status: IdeaStatus;
+  killReason: string;
+  createdAt: number;
+};
+
+export type CostEntry = {
+  id: string;
+  date: string;
+  project: string;
+  provider: string; // OpenAI, Anthropic, Replicate, etc.
+  amount: number;
+  note: string;
+  createdAt: number;
+};
+
 const KEYS = {
   state: "u1m:state",
   entries: "u1m:entries",
@@ -70,6 +111,10 @@ const KEYS = {
   habitChecks: "u1m:habitChecks",
   letters: "u1m:letters",
   vision: "u1m:vision",
+  mrr: "u1m:mrr",
+  ships: "u1m:ships",
+  ideas: "u1m:ideas",
+  costs: "u1m:costs",
 };
 
 function read<T>(k: string, fallback: T): T {
@@ -130,6 +175,25 @@ export const Store = {
 
   getVision(): VisionItem[] { return read<VisionItem[]>(KEYS.vision, []); },
   setVision(v: VisionItem[]) { write(KEYS.vision, v); },
+
+  getMrr(): MrrSnapshot[] { return read<MrrSnapshot[]>(KEYS.mrr, []); },
+  setMrr(m: MrrSnapshot[]) { write(KEYS.mrr, m); },
+  addMrr(mrr: number, customers: number) {
+    const all = Store.getMrr();
+    const date = todayISO();
+    const next = [...all.filter((s) => s.date !== date), { date, mrr, customers, at: Date.now() }].sort((a, b) => a.at - b.at);
+    write(KEYS.mrr, next);
+    return next;
+  },
+
+  getShips(): ShipItem[] { return read<ShipItem[]>(KEYS.ships, []); },
+  setShips(s: ShipItem[]) { write(KEYS.ships, s); },
+
+  getIdeas(): Idea[] { return read<Idea[]>(KEYS.ideas, []); },
+  setIdeas(i: Idea[]) { write(KEYS.ideas, i); },
+
+  getCosts(): CostEntry[] { return read<CostEntry[]>(KEYS.costs, []); },
+  setCosts(c: CostEntry[]) { write(KEYS.costs, c); },
 };
 
 export const todayISO = () => new Date().toISOString().slice(0, 10);

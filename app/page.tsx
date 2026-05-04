@@ -13,9 +13,13 @@ import Letters from "@/components/Letters";
 import Focus from "@/components/Focus";
 import VisionBoard from "@/components/VisionBoard";
 import WinWall from "@/components/WinWall";
+import MRRTracker from "@/components/MRRTracker";
+import ShipLog from "@/components/ShipLog";
+import IdeaInbox from "@/components/IdeaInbox";
+import CostTracker from "@/components/CostTracker";
 import { Store, dayNumber, type JourneyState } from "@/lib/storage";
 
-const TABS = ["Dashboard", "Journal", "Habits", "Focus", "Challenges", "Milestones", "Vision", "Settings"] as const;
+const TABS = ["Dashboard", "Startup", "Journal", "Habits", "Focus", "Challenges", "Milestones", "Vision", "Settings"] as const;
 type Tab = typeof TABS[number];
 
 export default function Home() {
@@ -59,6 +63,7 @@ export default function Home() {
         {tab === "Dashboard" && (
           <>
             <Timer state={state} setState={setState} />
+            <MRRTracker goal={state.goal} />
             <div className="grid md:grid-cols-2 gap-4">
               <StreakBar />
               <Focus />
@@ -66,6 +71,14 @@ export default function Home() {
               <WinWall />
             </div>
           </>
+        )}
+        {tab === "Startup" && (
+          <div className="space-y-8">
+            <MRRTracker goal={state.goal} />
+            <ShipLog />
+            <IdeaInbox />
+            <CostTracker />
+          </div>
         )}
         {tab === "Journal" && <Journal state={state} />}
         {tab === "Habits" && <Habits />}
