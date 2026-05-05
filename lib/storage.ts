@@ -91,6 +91,33 @@ export type Idea = {
   createdAt: number;
 };
 
+export type BookStatus = "reading" | "finished" | "abandoned";
+export type Book = {
+  id: string;
+  title: string;
+  author: string;
+  coverPhotoId: string | null;
+  status: BookStatus;
+  rating: number; // 0-5
+  oneLine: string;
+  topics: string[];
+  startedAt: string;
+  finishedAt: string;
+  createdAt: number;
+};
+
+export type BookNoteType = "quote" | "insight" | "action";
+export type BookNote = {
+  id: string;
+  bookId: string;
+  type: BookNoteType;
+  text: string;
+  page: string;
+  apply: string; // how this applies to my startup
+  done: boolean; // for action items
+  createdAt: number;
+};
+
 export type CostEntry = {
   id: string;
   date: string;
@@ -115,6 +142,8 @@ const KEYS = {
   ships: "u1m:ships",
   ideas: "u1m:ideas",
   costs: "u1m:costs",
+  books: "u1m:books",
+  bookNotes: "u1m:bookNotes",
 };
 
 function read<T>(k: string, fallback: T): T {
@@ -194,6 +223,12 @@ export const Store = {
 
   getCosts(): CostEntry[] { return read<CostEntry[]>(KEYS.costs, []); },
   setCosts(c: CostEntry[]) { write(KEYS.costs, c); },
+
+  getBooks(): Book[] { return read<Book[]>(KEYS.books, []); },
+  setBooks(b: Book[]) { write(KEYS.books, b); },
+
+  getBookNotes(): BookNote[] { return read<BookNote[]>(KEYS.bookNotes, []); },
+  setBookNotes(n: BookNote[]) { write(KEYS.bookNotes, n); },
 };
 
 export const todayISO = () => new Date().toISOString().slice(0, 10);

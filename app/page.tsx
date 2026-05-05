@@ -17,9 +17,11 @@ import MRRTracker from "@/components/MRRTracker";
 import ShipLog from "@/components/ShipLog";
 import IdeaInbox from "@/components/IdeaInbox";
 import CostTracker from "@/components/CostTracker";
+import BookNotes from "@/components/BookNotes";
+import DailyHighlight from "@/components/DailyHighlight";
 import { Store, dayNumber, type JourneyState } from "@/lib/storage";
 
-const TABS = ["Dashboard", "Startup", "Journal", "Habits", "Focus", "Challenges", "Milestones", "Vision", "Settings"] as const;
+const TABS = ["Dashboard", "Startup", "Journal", "Books", "Habits", "Focus", "Challenges", "Milestones", "Vision", "Settings"] as const;
 type Tab = typeof TABS[number];
 
 export default function Home() {
@@ -67,11 +69,13 @@ export default function Home() {
             <div className="grid md:grid-cols-2 gap-4">
               <StreakBar />
               <Focus />
-              <Notifications />
+              <DailyHighlight />
               <WinWall />
+              <Notifications />
             </div>
           </>
         )}
+        {tab === "Books" && <BookNotes />}
         {tab === "Startup" && (
           <div className="space-y-8">
             <MRRTracker goal={state.goal} />
